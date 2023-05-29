@@ -3,9 +3,14 @@ from sly import Lexer
 class brailleLexer(Lexer):
 
     #Set of tokens
-    tokens = { ID, NUM, PROC,
-               TRUE, FALSE, 
-               NEW, NTYPE, BTYPE, CALL}
+    tokens = { ID, NUM, OP, PROC,
+               TRUE, FALSE, VALUES, ALTER,
+               NEW, NTYPE, BTYPE, CALL,
+               ALTERB, SIGNAL, GT, LT,
+               EQEQ, DIFF, GE, LE, IT,
+               RPT, BRK, UNT, WHILE,
+               CASE, WHEN, THEN, ELSE,
+               PRINT}
 
     #Ignore spaces
     ignore ='\t '
@@ -18,6 +23,15 @@ class brailleLexer(Lexer):
     FALSE = r'False'
     NTYPE = r'Num'
     BTYPE = r'Bool'
+    OP = r'ADD|SUB|MUL|DIV'
+    DIFF = r'<>'
+    GE = r'>='
+    LE = r'<='
+    GT = r'>'
+    LT = r'<'
+    EQEQ = r'=='
+    PRINT = r'PrintValues'
+
 
     @_(r'\d+')
     def NUM(self, t):
@@ -27,8 +41,21 @@ class brailleLexer(Lexer):
     #Identifiers and keywords
     ID = r'@[a-zA-Z0-9?_]{1,11}'
     PROC = r'Proc'
+    VALUES = r'Values'
     NEW = r'New'
     CALL = r'CALL'
+    ALTERB = r'AlterB'
+    ALTER = r'Alter'
+    SIGNAL = r'Signal'
+    IT = r'IsTrue'
+    RPT = r'Repeat'
+    BRK = r'Break;'
+    UNT = r'Until'
+    WHILE = r'While'
+    CASE = r'Case'
+    WHEN = r'When'
+    THEN = r'Then'
+    ELSE = r'Else'
 
     ignore_comment = r'//.*'
 
@@ -46,12 +73,8 @@ if __name__ == '__main__':
 //Comentario inicial
 Proc @Master
 (
-CALL(@hola);
-);
-
-Proc @hola
-(
-New @variable1, (Num, 5);
+Values (@variable1, 1);
+PrintValues (@variable1);
 );
 '''
     lexer = brailleLexer()
