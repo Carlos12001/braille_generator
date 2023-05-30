@@ -10,7 +10,7 @@ class brailleLexer(Lexer):
                EQEQ, DIFF, GE, LE, IT,
                RPT, BRK, UNT, WHILE,
                CASE, WHEN, THEN, ELSE,
-               PRINT}
+               PRINT, STRING}
 
     #Ignore spaces
     ignore ='\t '
@@ -32,10 +32,14 @@ class brailleLexer(Lexer):
     EQEQ = r'=='
     PRINT = r'PrintValues'
 
-
     @_(r'\d+')
     def NUM(self, t):
         t.value = int(t.value)
+        return t
+    
+    @_(r'"([^"\\]|\\.)*"')
+    def STRING(self, t):
+        t.value = t.value[1:-1]  # This removes the double quote around
         return t
     
     #Identifiers and keywords

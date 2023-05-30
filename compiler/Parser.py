@@ -93,7 +93,8 @@ class brailleParser(Parser):
         return ('params', p.param, p.params)
 
     @_('ID',
-      'NUM')
+      'NUM',
+      'STRING')
     def param(self, p):
         return p[0]
 
@@ -167,7 +168,8 @@ if __name__ == '__main__':
 Proc @Master
 (
 Values (@variable1, 1);
-PrintValues (@variable1);
+PrintValues ("Hola", @variable1, "adios compi 
+2023");
 );
 '''
 
