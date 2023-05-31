@@ -163,13 +163,22 @@ if __name__ == '__main__':
 
     env = {}
 
-    data = '''
-//Comentario inicial
+    data = '''//Comentario inicial
+Proc @Pedro
+(
+PrintValues ("ayuda", "por favor");
+);
 Proc @Master
 (
-Values (@variable1, 1);
+NEW @Variable1, (Num, 1);
+Values (@variable1, 5);
 PrintValues ("Hola", @variable1, "adios compi 
 2023");
+PrintValues ("ayuda", "por favor");
+);
+Proc @Juan
+(
+PrintValues ("Adios", "Mundo");
 );
 '''
 

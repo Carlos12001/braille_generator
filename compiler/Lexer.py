@@ -46,7 +46,7 @@ class brailleLexer(Lexer):
     ID = r'@[a-zA-Z0-9?_]{1,11}'
     PROC = r'Proc'
     VALUES = r'Values'
-    NEW = r'New'
+    NEW = r'NEW'
     CALL = r'CALL'
     ALTERB = r'AlterB'
     ALTER = r'Alter'
