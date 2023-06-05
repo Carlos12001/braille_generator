@@ -4,10 +4,11 @@
 Adafruit_PWMServoDriver myServo = Adafruit_PWMServoDriver();
 
 #define SERVOMIN 150
-#define SERVOMAX 600
+#define SERVOMAX 300
 
-uint8_t servonum = 0;
+
 uint8_t numberOfServos = 12;
+uint8_t servonum = 0;
 
 void setup() {
   Serial.begin(9600);
@@ -28,5 +29,5 @@ void loop() {
   
   servonum ++;
   if (servonum > numberOfServos-1) 
-     servonum = 0;
+    servonum = 0;
 }
