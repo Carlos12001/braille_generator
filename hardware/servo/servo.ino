@@ -3,6 +3,7 @@
 
 Adafruit_PWMServoDriver myServo = Adafruit_PWMServoDriver();
 
+#define DELAYSERVO 100
 #define SERVOMIN 150
 #define SERVOMAX 300
 
@@ -18,16 +19,20 @@ void setup() {
 }
 
 void loop() {
-  for (uint16_t pulselen = SERVOMIN; pulselen < SERVOMAX; pulselen++){
-    myServo.setPWM(servonum, 0, pulselen);
-  }
-  delay(500);
-  for (uint16_t pulselen = SERVOMAX; pulselen > SERVOMIN; pulselen--){
-    myServo.setPWM(servonum, 0, pulselen);
-  }
-  delay(500);
+  raiseServo(servonum);
+  lowerServo(servonum);
   
   servonum ++;
   if (servonum > numberOfServos-1) 
     servonum = 0;
+}
+
+void raiseServo(uint8_t servoNum){
+  myServo.setPWM(servonum, 0, SERVOMAX);  // mover el servo a la posición máxima
+  delay(DELAYSERVO);
+}
+
+void lowerServo(uint8_t servoNum){
+  myServo.setPWM(servonum, 0, SERVOMIN);  // mover el servo a la posición mínima
+  delay(DELAYSERVO);
 }
