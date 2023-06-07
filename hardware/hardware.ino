@@ -20,7 +20,7 @@ void setup() {
   delay(10);
   parseAndMoveServos("000000000000a");
   digitalWrite(errorLed,LOW);
-  Serial.println("listo"); 
+  // Serial.println("listo"); 
 }
 
 void loop() {

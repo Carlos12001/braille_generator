@@ -28,5 +28,5 @@ void loop() {
   
   servonum ++;
   if (servonum > numberOfServos-1) 
-     servonum = 0;
+    servonum = 0;
 }
