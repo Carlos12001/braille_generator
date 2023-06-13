@@ -106,9 +106,9 @@ class brailleParser(Parser):
     def cases(self, p):
         return ('cases', p.case, p.cases)
 
-    @_('cases case ELSE "(" statements ")" ')
+    @_('case cases ELSE "(" statements ")" ')
     def cases(self, p):
-        return ('cases', p.cases, p.case, p.ELSE, p.statements)
+        return ('cases', p.case, p.cases, p.ELSE, p.statements)
     
     @_('WHEN NUM THEN "(" statements ")" ',
        'WHEN boolean THEN "(" statements ")" ')
