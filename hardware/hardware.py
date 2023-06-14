@@ -138,21 +138,18 @@ class BrailleEncoder:
 
 
 arduino = serial.Serial("COM3", 9600)
-time.sleep(2)
+time.sleep(1)
 message = "Hola mundo"
 encoder = BrailleEncoder(message)
 while not encoder.finished:
-    time.sleep(2)
-    arduino.write(encoder.get_character())
-    saludo = arduino.readline().decode("utf-8").rstrip()
-    print(saludo)
     print("presiona enter para continuar")
     input()
+    arduino.write(encoder.get_character())
+    print("Se envio: ", encoder.get_character())
+    saludo = arduino.readline().decode("utf-8").rstrip()
+    print(saludo)
     encoder.next()
 
-time.sleep(2)
 arduino.write(encoder.get_character())
-saludo = arduino.readline().decode("utf-8").rstrip()
-print(saludo)
 arduino.close()
 print("Finished")  
