@@ -1,4 +1,9 @@
 from compiler import *
+import contextlib
+import io
+
+console = io.StringIO()
+
 
 def brailleRun(lst, instr, glb , lc, proc):
     for i in range(len(instr)):
@@ -74,12 +79,15 @@ def brailleRun(lst, instr, glb , lc, proc):
                 if varExists(glb, instr[i][1][1]):
                     varValue = varCheck(glb, instr[i][1][1])
                     print("pos", varValue, "state",instr[i][2])
+
                 else:
                     varValue = varCheck(lc, instr[i][1][1])
                     print("pos", varValue, "state",instr[i][2])
+
                 
             else:
                 print("pos",instr[i][1],"state", instr[i][2])
+
 
     
 def varExists(vars, vName):
@@ -116,14 +124,32 @@ Signal(@variable5, 1);
 '''
 parsedlist = parser.parse(lexer.tokenize(data))
 
+
 #print(instruction_stack(searchProcedure(parsedlist, "@Master")))
+def execute(bltext):
+    with contextlib.redirect_stdout(console): #Esto captura todos los prints
+        parsedlist = parser.parse(lexer.tokenize(bltext))
+        if searchProcedure(parsedlist, "@Master"):
+            start = instruction_stack(searchProcedure(parsedlist, "@Master"))
+            brailleRun(parsedlist, start ,[], [], "G")
+        else:
+            print("Error: procedure @Master is missing!")
+
+    return console.getvalue()
 
 
-if searchProcedure(parsedlist, "@Master"):
-        start = instruction_stack(searchProcedure(parsedlist, "@Master"))
-        brailleRun(parsedlist, start ,[], [], "G")
-else:
-        print("Error: procedure @Master is missing!")
+
+'''
+print("banana")
+
+def r_file(txt):
+    with contextlib.redirect_stdout(console):
+        execute(txt)
+
+r_file(data)
+print(console.getvalue())
+'''
+
 
 #print(searchProcedure(parsedlist, "@Master"))
 

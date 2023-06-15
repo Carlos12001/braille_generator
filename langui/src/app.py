@@ -1,7 +1,12 @@
-from flask import Flask, request, jsonify
-import tkinter as tk
-from tkinter.filedialog import askopenfilename
-tk.Tk().withdraw() # part of the import if you are not using other tkinter functions
+import sys
+import os
+
+compiler_path = os.path.abspath(os.path.join(os.path.dirname(__file__), '..', '..', 'compiler'))
+sys.path.append(compiler_path)
+from execute import *
+
+
+from flask import Flask, request
 
 fpath = None
 fcontent = None
@@ -51,9 +56,12 @@ def save_file():
     else:
         return "Error: Open a file first!"
 
-@app.route('/', methods = ['Get'])
-def get_text():
-    return jsonify({"read":"text"})
+@app.route('/run-file', methods=['GET'])
+def run_file():
+    if(fcontent):  
+        return execute(fcontent)
+    else:
+        return "Error: Something happened while running the code! :C!"
 
 app.run()
 

@@ -54,6 +54,20 @@ save.addEventListener('click', async () => {
 });
 
 
+run.addEventListener('click', async () => {
+  if (filePath !== null) {
+    // Replace the file's text with the editor's text
+    const response = await fetch('http://127.0.0.1:5000/run-file', {
+    method: 'GET',
+    });
+
+    const data = await response.text();
+    updateConsole(data);
+    console.log(data); // Print the response from Python
+  }
+});
+
+
 openf.addEventListener('click', () => {
   cleanConsole();
   ipcRenderer.invoke('open-file-dialog')
