@@ -49,6 +49,12 @@ def instruction_match(lst):
             return print_case(lst, ())
         case 'case':
             return cases_case(lst, ())
+        case 'while':
+            return while_case(lst)
+        case 'until':
+            return until_case(lst)
+        case 'repeat':
+            return repeat_case(lst, ())
         case other:
             return lst
 
@@ -89,9 +95,67 @@ def cases_case(vanilla_tuple, res):
         res = cases_case(vanilla_tuple[2], res)
         return res
     if(vanilla_tuple[0] == 'instructions'):
-        res += (instruction_match(vanilla_tuple[1]), )
-        return res
+        if(len(vanilla_tuple) == 2):
+            #print(vanilla_tuple)
+            res += (instruction_match(vanilla_tuple[1]), )
+            return res
+        else:
+            res = cases_case(vanilla_tuple[1], res)
+            res += (instruction_match(vanilla_tuple[2]), )
+            return res
 
+def while_case(vanilla_tuple):
+    if vanilla_tuple[0] == 'while':
+        res = [vanilla_tuple[0]]
+        res.append(vanilla_tuple[1])
+        res.extend(while_case(vanilla_tuple[2]))
+        return tuple(res)
+    elif vanilla_tuple[0] == 'instructions':
+        if len(vanilla_tuple) == 2:
+            return while_case(vanilla_tuple[1])
+        else:
+            res = []
+            for item in vanilla_tuple[1:]:
+                res.extend(while_case(item))
+            return res
+    else:
+        return (instruction_match(vanilla_tuple),)
+
+def until_case(vanilla_tuple):
+    if vanilla_tuple[0] == 'until':
+        res = [vanilla_tuple[0]]
+        res.append(vanilla_tuple[2])
+        instructions = vanilla_tuple[1]
+        if instructions[0] == 'instructions':
+            for item in instructions[1:]:
+                res.extend(until_case(item))
+        else:
+            res.append(until_case(instructions))
+        return tuple(res)
+    elif vanilla_tuple[0] == 'instructions':
+        if len(vanilla_tuple) == 2:
+            return until_case(vanilla_tuple[1])
+        else:
+            res = []
+            for item in vanilla_tuple[1:]:
+                res.extend(until_case(item))
+            return res
+    else:
+        return (instruction_match(vanilla_tuple),)
+
+def repeat_case(vanilla_tuple, res):
+    if(vanilla_tuple[0]=='repeat'):
+        res += ((vanilla_tuple[0]), )
+        res = repeat_case(vanilla_tuple[1], res)
+        return res 
+    else:
+        if(len(vanilla_tuple)==2):
+            res += ((instruction_match(vanilla_tuple[1])), )
+            return res
+        else:
+            res = repeat_case(vanilla_tuple[1], res)
+            res += (instruction_match(vanilla_tuple[2]), )
+            return res
 
 #Parametros: tupla arbol, nombre de procedimiento a buscar
 #Retorna: tupla arbol que unicamente contiene el procedimiento buscado. 
@@ -121,7 +185,10 @@ NEW @variable1, (Num, 1);
 NEW @variable2, (Bool, True);
 Case @variable1
 When 1 Then
-( Signal(@variale1, 0);)
+( 
+    Signal(@variale1, 0);
+    PrintValues ("Ayuda");
+)
 When 2 Then
 ( Signal(@variale1, 0);)
 Else
@@ -139,12 +206,16 @@ Proc @Pedro
 Values (@var, True);
 While IsTrue(@variale2);
  ( Signal(@variale2, 1);
+ PrintValues ("ayuda");
+ Values (@variable1,
+ Alter (@variable1,ADD, 1););
 // Cambia variable a False
  AlterB (@variable2);
 );
 PrintValues ("Aqui procedimiento ", @variable1, " pedro");
 Until
  (
+ PrintValues ("ayuda");
 // Aumenta en 1 a la variable
  Values (@variable1,
  Alter (@variable1,ADD, 1););
@@ -155,7 +226,7 @@ Until
     parsedlist = parser.parse(lexer.tokenize(data))
     #print(parsedlist)
     #print(searchProcedure(parsedlist, "@Master"))
-    #print(instruction_stack(searchProcedure(parsedlist, "@Master")))
-    print(instruction_match(('case', '@variable1', ('cases', ('when', 1, ('instructions', ('signal', '@variale1', 0))), ('cases', ('when', 2, ('instructions', ('signal', '@variale1', 0))), None, 'Else', ('instructions', ('proc_call', '@pedro')))))))    
+    print(instruction_stack(searchProcedure(parsedlist, "@Master")))
+    #print(instruction_match(('case', '@variable1', 1, ('instructions', ('signal', '@variale1', 0)), 2, ('signal', '@variale1', 0), 'Else', ('proc_call', '@pedro'))))
     
     #print(check_first_comment(data))
