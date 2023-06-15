@@ -1,4 +1,4 @@
-import serial, time
+import serial,time,threading
 
 class BrailleEncoder:
 
@@ -128,28 +128,46 @@ class BrailleEncoder:
             return (self.__braille_dict[char] + char).encode("ascii")
 
 
-## Test
+class Hardware:
+    def __init__(self, port="COM3", baudrate=9600):
+        self.ser = serial.Serial(port, baudrate)
+        self.thread = threading.Thread(target=self.listen)
+        self.encoder = None
+        self.wait_time = 2
 
-# message = "Hola mundo"
-# encoder = BrailleEncoder(message)
-# for i in range(len(message)+5):
-#     print(encoder.get_character())
-#     encoder.next()
+    def listen(self):
+        while True:
+            if self.ser.inWaiting():
+                message = self.ser.readline().decode('utf-8').rstrip()
+                if message == "next":
+                    time.sleep(self.wait_time)
+                    self.ser.write(self.encoder.get_character())
+                    print("It's reviced ", self.encoder.get_character())
+                    self.encoder.next()
+                    if self.encoder.finished:
+                        break
+            
 
+    def send(self, message):
+        if self.encoder is not None:
+            raise Exception("There is already a message being encoded")
+        self.encoder = BrailleEncoder(message)
+        self.thread.start()
 
-arduino = serial.Serial("COM3", 9600)
-time.sleep(1)
-message = "Hola mundo"
-encoder = BrailleEncoder(message)
-while not encoder.finished:
-    print("presiona enter para continuar")
-    input()
-    arduino.write(encoder.get_character())
-    print("Se envio: ", encoder.get_character())
-    saludo = arduino.readline().decode("utf-8").rstrip()
-    print(saludo)
-    encoder.next()
+    def close(self):
+        self.ser.close()
 
-arduino.write(encoder.get_character())
-arduino.close()
-print("Finished")  
+# Crea la instancia de Hardware
+hardware1 = Hardware()
+
+# Configura el encoder y comienza a escuchar
+hardware1.send("Hello word")
+
+# Espera hasta que termine la codificacion
+while not hardware1.encoder.finished:
+    time.sleep(1)  # Espera un segundo para evitar sobrecargar la CPU
+
+# Cierra la conexion
+hardware1.close()
+
+print("Finished")

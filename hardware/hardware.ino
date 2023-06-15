@@ -8,19 +8,23 @@ Adafruit_PWMServoDriver myServo = Adafruit_PWMServoDriver();
 #define SERVOMAX 300
 #define NUMSERVOS 12
 
-int changeSomething = 1;
-const int errorLed = 5;
 String receivedString = "";
+const int errorLed = 5;
+const int nextButton = 8;
+int buttonOld = 0;  
+int buttonNew = 0;
+
 
 void setup() {
   Serial.begin(9600);
   myServo.begin();
   myServo.setPWMFreq(60);
-  pinMode(errorLed, OUTPUT);
+  pinMode(errorLed,OUTPUT);
+  pinMode(nextButton,INPUT);
   delay(10);
   parseAndMoveServos("000000000000a");
+  Serial.println("");
   digitalWrite(errorLed,LOW);
-  // Serial.println("listo"); 
 }
 
 void loop() {
@@ -33,9 +37,7 @@ void loop() {
   if (receivedString.length()!=0) {
     if (isValidInput(receivedString)) {
       parseAndMoveServos(receivedString);
-      changeSomething = 1;
       digitalWrite(errorLed,LOW);
-      //imprima(receivedString)
     }
     else{
       parseAndMoveServos("000000000000a");
@@ -44,9 +46,22 @@ void loop() {
     receivedString = "";
   }
 
-  if(changeSomething){
-    changeSomething = 0;
-    Serial.println("Hi Python!");
+  buttonNew = digitalRead(nextButton);
+  if(buttonNew && !buttonOld){
+    buttonOld = 1;
+    digitalWrite(errorLed,HIGH);
+    Serial.println("next");
+    delay(1000);
+    digitalWrite(errorLed,LOW);
+    Serial.println("");
+  }
+  else if (buttonNew){
+    Serial.println("");
+    buttonOld = 1;
+    delay(1000);
+  }
+  else{
+    buttonOld = 0;
   }
 }
 
