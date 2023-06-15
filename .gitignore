@@ -236,7 +236,6 @@ $RECYCLE.BIN/
 # End of https://www.toptal.com/developers/gitignore/api/windows,linux,python,visualstudiocode
 
 
-
 # Davids electron gitignore section
 
 # Logs
@@ -371,3 +370,6 @@ dist
 .pnp.*
 
 
+# Ignore vnvm and other generated files in Linux (David)
+dibenv/
+parser.out
