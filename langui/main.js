@@ -1,5 +1,5 @@
 const { app, BrowserWindow, Menu, ipcMain, dialog } = require('electron')
-const path = require('path')
+
 //const axios = require('axios')
 //const pylink = require('./src/backend/pylink.js');
 //const { dialog } = require('electron');
