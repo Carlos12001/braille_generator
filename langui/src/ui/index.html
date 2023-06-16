@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <link rel="stylesheet" href="./bootstrap.min.css">
+  <meta charset="UTF-8">
+  <!-- https://developer.mozilla.org/en-US/docs/Web/HTTP/CSP -->
+  <meta http-equiv="Content-Security-Policy" content="default-src 'self'; connect-src http://127.0.0.1:5000">
+  <title>BL IDE!</title>
+</head>
+
+<body>
+  <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+    <div class="container-fluid">
+      <div class="d-flex justify-content-start align-items-center">
+        <button type="button" class="btn btn-warning me-2" id="open">Open</button>
+        <button type="button" class="btn btn-danger me-2" id="save">Save</button>
+      </div>
+      <a class="navbar-brand" href="#">bl IDE</a>
+      <div class="d-flex">
+        <button type="button" class="btn btn-primary me-2" id="compile">Compile</button>
+        <button type="button" class="btn btn-success" id="run">Run</button>
+      </div>
+    </div>
+  </nav>
+
+
+  <main class="container-fluid">
+    <div class="form-group">
+      <label for="editableTextarea" class="form-label mt-2">File code</label>
+      <textarea class="form-control bg-dark text-light resize-none" id="editor" rows="15"></textarea>
+    </div>
+    <div class="form-group">
+      <label for="nonEditableTextarea" class="form-label mt-2">Console</label>
+      <textarea class="form-control bg-dark text-light resize-none" id="console" rows="8" readonly></textarea>
+    </div>
+  </main>
+  <script type="module" src="./app.js"></script>
+</body>
+
+</html>

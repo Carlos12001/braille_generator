@@ -1,0 +1,15 @@
+{
+  "name": "langui",
+  "version": "1.0.0",
+  "description": "bl Language IDE",
+  "main": "main.js",
+  "scripts": {
+    "start": "electron ."
+  },
+  "keywords": [],
+  "author": "diabloget",
+  "license": "MIT",
+  "devDependencies": {
+    "electron": "^24.5.1"
+  }
+}

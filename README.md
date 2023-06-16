@@ -16,3 +16,7 @@ SDL - EL SEGUNDO DESPUES DE SCL
 
 https://learn.adafruit.com/16-channel-pwm-servo-driver?view=all 
  
+## IDE
+
+The IDE is built with Electron Js, which gives it a modern look. Since the language is still being compiled in Python, it was necessary to stablish a connection using Flask in python and http fetchs from Javascript.
+
