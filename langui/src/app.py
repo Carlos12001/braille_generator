@@ -59,7 +59,14 @@ def save_file():
 @app.route('/run-file', methods=['GET'])
 def run_file():
     if(fcontent):  
-        return execute(fcontent)
+        return run(fcontent)
+    else:
+        return "Error: Something happened while running the code! :C!"
+    
+@app.route('/compile-file', methods=['GET'])
+def compile_file():
+    if(fcontent):  
+        return comp(fcontent)
     else:
         return "Error: Something happened while running the code! :C!"
 

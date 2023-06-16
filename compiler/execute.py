@@ -2,8 +2,6 @@ from compiler import *
 import contextlib
 import io
 
-console = io.StringIO()
-
 
 def brailleRun(lst, instr, glb , lc, proc):
     for i in range(len(instr)):
@@ -312,20 +310,38 @@ parsedlist = parser.parse(lexer.tokenize(data))
 
 
 #print(instruction_stack(searchProcedure(parsedlist, "@Master")))
-def execute(bltext):
-    with contextlib.redirect_stdout(console): #Esto captura todos los prints
-        parsedlist = parser.parse(lexer.tokenize(bltext))
-        if check_first_comment(bltext):
-            if searchProcedure(parsedlist, "@Master"):
-                start = instruction_stack(searchProcedure(parsedlist, "@Master"))
-                brailleRun(parsedlist, start ,[], [], "G")
+def run(bltext):
+    console = io.StringIO()
+    with contextlib.redirect_stderr(console):
+        with contextlib.redirect_stdout(console): #Esto captura todos los prints
+            parsedlist = parser.parse(lexer.tokenize(bltext))
+            if check_first_comment(bltext):
+                if searchProcedure(parsedlist, "@Master"):
+                    start = instruction_stack(searchProcedure(parsedlist, "@Master"))
+                    brailleRun(parsedlist, start ,[], [], "G")
+                else:
+                    print("Warning: Master procedure could be missing")
             else:
-                print("Error: procedure @Master is missing!")
-        else:
-            print("Error: Initial comment is missing!")
+                print("Error: Initial comment is missing!")
 
     return console.getvalue()
 
+
+def comp(bltext):
+    console = io.StringIO()
+    with contextlib.redirect_stderr(console):
+        with contextlib.redirect_stdout(console): #Esto captura todos los prints
+            parsedlist = parser.parse(lexer.tokenize(bltext))
+            if check_first_comment(bltext):
+                if searchProcedure(parsedlist, "@Master"):
+                    start = instruction_stack(searchProcedure(parsedlist, "@Master"))
+                    brailleRun(parsedlist, start ,[], [], "G")
+                else:
+                    print("Warning: Master procedure could be missing")
+            else:
+                print("Error: Initial comment is missing!")
+
+    return console.getvalue()
 
 
 '''

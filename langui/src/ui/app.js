@@ -28,14 +28,15 @@ save.addEventListener('click', async () => {
 */
 
 
+function cleanConsole(){
+  consolet.value = "";
+}
 
 function updateConsole(text){
   consolet.value = text;
 }
 
-function cleanConsole(){
-  consolet.value = "";
-}
+
 
 save.addEventListener('click', async () => {
   const editorValue = editor.value; // Get the text from the editor
@@ -54,6 +55,24 @@ save.addEventListener('click', async () => {
 });
 
 
+compile.addEventListener('click', async () => {
+  if (filePath !== null) {
+    // Replace the file's text with the editor's text
+    const response = await fetch('http://127.0.0.1:5000/compile-file', {
+    method: 'GET',
+    });
+
+    const data = await response.text();
+    updateConsole(data);
+    console.log(data); // Print the response from Python
+  }
+
+   else {
+    updateConsole("Open a file first!")
+  }
+});
+
+
 run.addEventListener('click', async () => {
   if (filePath !== null) {
     // Replace the file's text with the editor's text
@@ -64,6 +83,9 @@ run.addEventListener('click', async () => {
     const data = await response.text();
     updateConsole(data);
     console.log(data); // Print the response from Python
+  }
+  else {
+    updateConsole("Open a file first!");
   }
 });
 
