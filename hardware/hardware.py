@@ -152,23 +152,25 @@ class Hardware:
     def send(self,message="",directly=False,ard=None):
         if self.encoder is not None:
             raise Exception("There is already a message being encoded")
+            return
         if directly:
             print("directly")
             if ard is not None:
-                self.encoder = BrailleEncoder(message,directly=True,ard=ard)
+                self.encoder = BrailleEncoder(directly=True,ard=ard)
             else:
                 raise ValueError("If 'directly' is set to True, 'ard' must be provided.")
         else:
             self.encoder = BrailleEncoder(message)
+        self.thread.start()
  
     def close(self):
         self.ser.close()
 
 # Crea la instancia de Hardware
 hardware = Hardware()
-
+ard = ['000000000000 ', '000000010000 ', '000100010000 ', '000100010010 ']
 # Configura el encoder y comienza a escuchar
-hardware.send("Hello word")
+hardware.send(directly=True,ard=ard)
 
 print("Waiting for the message to be sent")
 # Espera hasta que termine la codificacion
