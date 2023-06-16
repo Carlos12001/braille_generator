@@ -3,13 +3,13 @@ import contextlib
 import io
 
 
-def brailleRun(lst, instr, glb , lc, ard ,proc, running):
+def brailleRun(lst, instr, glb , lc, ard ,proc, running, initial):
     for i in range(len(instr)):
 
         if instr[i][0] == 'proc_call':
             if searchProcedure(parsedlist, instr[i][1]):
                 called = instruction_stack(searchProcedure(parsedlist, instr[i][1]))
-                brailleRun(lst, called ,glb , lc, ard, "L", running)
+                brailleRun(lst, called ,glb , lc, ard, "L", running, "N")
                 lc.clear()
             else:
                 print("Error: procedure '" +instr[i][1]+ "' doesnt exist!")
@@ -33,7 +33,7 @@ def brailleRun(lst, instr, glb , lc, ard ,proc, running):
                 if isinstance(instr[i][2], int) and isinstance(varCheck(en, instr[i][1]), int) or isinstance(instr[i][2], str) and isinstance(varCheck(en, instr[i][1]), str):
                     varAlter(en, instr[i][1], instr[i][2])
                 elif isinstance(instr[i][2], tuple):
-                    brailleRun(lst, (instr[i][2],) ,glb , lc, ard, proc, running)
+                    brailleRun(lst, (instr[i][2],) ,glb , lc, ard, proc, running, "N")
                     en2 = varList(glb, lc, instr[i][2][1])
                     if isinstance(varCheck(en2, instr[i][2][1]), int) and isinstance(varCheck(en, instr[i][1]), int) or isinstance(varCheck(en2, instr[i][2][1]), str) and isinstance(varCheck(en, instr[i][1]), str):
                         varAlter(en, instr[i][1], varCheck(en2, instr[i][2][1]))
@@ -108,7 +108,7 @@ def brailleRun(lst, instr, glb , lc, ard ,proc, running):
 
             
             elif isinstance(instr[i][1], tuple):
-                brailleRun(lst, (instr[i][1],) ,glb , lc, ard, proc, running)
+                brailleRun(lst, (instr[i][1],) ,glb , lc, ard, proc, running, "N")
                 if varExists(glb, instr[i][1][1]) or varExists(lc, instr[i][1][1]):
                     en = varList(glb, lc, instr[i][1][1])
                     if varCheck(en, instr[i][1][1]) >= 0 and varCheck(en, instr[i][1][1]) <= 11:
@@ -143,7 +143,8 @@ def brailleRun(lst, instr, glb , lc, ard ,proc, running):
                         en = varList(glb, lc, instr[i][1])
                         if varCheck(en, instr[i][1]) >= 0 and varCheck(en, instr[i][1]) <= 11:
                             varValue = varCheck(en, instr[i][1])
-                            return posSignal(ard, varValue)
+                            if running:
+                                print(posSignal(ard, varValue))
                         else:
                             print("Error: position '" +str(instr[i][1])+ "' is out of range!")
                             break
@@ -152,7 +153,8 @@ def brailleRun(lst, instr, glb , lc, ard ,proc, running):
                         break
                 elif isinstance(instr[i][1], int):
                     if instr[i][1] >= 0 and instr[i][1] <= 11:
-                        return posSignal(ard, instr[i][1])
+                        if running:
+                            print(posSignal(ard, instr[i][1]))
                     else:
                         print("Error: position '" +str(instr[i][1])+ "' is out of range!")
                         break
@@ -226,23 +228,23 @@ def brailleRun(lst, instr, glb , lc, ard ,proc, running):
 
         elif instr[i][0] == 'repeat':
             for r in range(1, len(instr[i])):
-                brailleRun(lst, (instr[i][r],) ,glb , lc, ard, proc, running)
+                brailleRun(lst, (instr[i][r],) ,glb , lc, ard, proc, running, "N")
         
         
         elif instr[i][0] == 'until':
             for u in range(2, len(instr[i])):
-                brailleRun(lst, (instr[i][u],) ,glb , lc, ard, proc, running)
-            if brailleRun(lst, (instr[i][1],) ,glb , lc, ard, proc, running):
+                brailleRun(lst, (instr[i][u],) ,glb , lc, ard, proc, running, "N")
+            if brailleRun(lst, (instr[i][1],) ,glb , lc, ard, proc, running, "N"):
                 i += 1 
             else:
-                brailleRun(lst, (instr[i],) ,glb , lc, ard, proc, running)
+                brailleRun(lst, (instr[i],) ,glb , lc, ard, proc, running, "N")
 
         
         elif instr[i][0] == 'while':
-            if brailleRun(lst, (instr[i][1],) ,glb , lc, ard, proc, running):
+            if brailleRun(lst, (instr[i][1],) ,glb , lc, ard, proc, running, "N"):
                 for u in range(2, len(instr[i])):
-                    brailleRun(lst, (instr[i][u],) ,glb , lc, ard, proc, running)
-                brailleRun(lst, (instr[i],) ,glb , lc, ard, proc, running)
+                    brailleRun(lst, (instr[i][u],) ,glb , lc, ard, proc, running, "N")
+                brailleRun(lst, (instr[i],) ,glb , lc, ard, proc, running, "N")
             else:
                 i += 1
         
@@ -255,7 +257,7 @@ def brailleRun(lst, instr, glb , lc, ard ,proc, running):
                 found = False
                 while c < len(instr[i]):
                     if isinstance(instr[i][c], tuple) and varCheck(en, instr[i][1]) == comp or comp == 'Else' and not(found):
-                        brailleRun(lst, (instr[i][c],) ,glb , lc, ard, proc, running)
+                        brailleRun(lst, (instr[i][c],) ,glb , lc, ard, proc, running, "N")
                         c += 1
                         found = True
                     elif comp == 'Else' and found:
@@ -287,8 +289,8 @@ def brailleRun(lst, instr, glb , lc, ard ,proc, running):
                 print(output)
     
 
-    if running:
-        return ard
+    if running and initial == 'Y':
+        print(ard)
 
 
 
@@ -344,6 +346,7 @@ data = '''//Comentario inicial
 Proc @Master
 (
 NEW @variable1, (Num, 4);
+
 Case @variable1
 When 1 Then
 ( PrintValues ("Aqui procedimiento ", @variable1, " master");)
@@ -359,8 +362,11 @@ Else
 Proc @Pedro
 (
 NEW @variable2, (Num, 1);
-Values (@variable1, Alter (@variable2,ADD, 2););
+Values (@variable1, Alter (@variable2,ADD, 6););
+ Signal(@variable2, 1);
 PrintValues ("Aqui procedimiento ", @variable1, " PEDRO");
+  ViewSignal (@variable1);
+   Signal(3, 1);
 );
 '''
 parsedlist = parser.parse(lexer.tokenize(data))
@@ -375,7 +381,7 @@ def run(bltext):
             if check_first_comment(bltext):
                 if searchProcedure(parsedlist, "@Master"):
                     start = instruction_stack(searchProcedure(parsedlist, "@Master"))
-                    brailleRun(parsedlist, start ,[], [], ['000000000000'], "G", True)
+                    brailleRun(parsedlist, start ,[], [], ['000000000000'], "G", True, "Y")
                 else:
                     print("Warning: Master procedure is missing or there are errors in the code")
             else:
@@ -392,7 +398,7 @@ def comp(bltext):
             if check_first_comment(bltext):
                 if searchProcedure(parsedlist, "@Master"):
                     start = instruction_stack(searchProcedure(parsedlist, "@Master"))
-                    brailleRun(parsedlist, start ,[], [], ['000000000000'], "G", False)
+                    brailleRun(parsedlist, start ,[], [], ['000000000000'], "G", False, "Y")
                 else:
                     print("Warning: Master procedure is missing or there are errors in the code")
             else:
@@ -410,17 +416,17 @@ def r_file(txt):
 
 r_file(data)
 print(console.getvalue())
-
+'''
 
 if check_first_comment(data):
     if searchProcedure(parsedlist, "@Master"):
         start = instruction_stack(searchProcedure(parsedlist, "@Master"))
-        brailleRun(parsedlist, start ,[], [], ['000000000000'], "G", True)
+        brailleRun(parsedlist, start ,[], [], ['000000000000'], "G", True, "Y")
     else:
         print("Error: procedure @Master is missing!")
 else:
     print("Error: Initial comment is missing!")
-'''
+
 
 #print(searchProcedure(parsedlist, "@Master"))
 
