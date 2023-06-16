@@ -141,13 +141,21 @@ def brailleRun(lst, instr, glb , lc, ard ,proc, running):
                 if isinstance(instr[i][1], str):
                     if varExists(glb, instr[i][1]) or varExists(lc, instr[i][1]):
                         en = varList(glb, lc, instr[i][1])
-                        varValue = varCheck(en, instr[i][1])
-                        return posSignal(ard, varValue)
+                        if varCheck(en, instr[i][1]) >= 0 and varCheck(en, instr[i][1]) <= 11:
+                            varValue = varCheck(en, instr[i][1])
+                            return posSignal(ard, varValue)
+                        else:
+                            print("Error: position '" +str(instr[i][1])+ "' is out of range!")
+                            break
                     else: 
                         print("Error: variable '" +instr[i][1]+ "' doesnt exist!")
                         break
                 elif isinstance(instr[i][1], int):
-                    return posSignal(ard, instr[i][1])
+                    if instr[i][1] >= 0 and instr[i][1] <= 11:
+                        return posSignal(ard, instr[i][1])
+                    else:
+                        print("Error: position '" +str(instr[i][1])+ "' is out of range!")
+                        break
                 else:
                     print("Error: position is not a number nor a numeric variable")
                     break
@@ -284,10 +292,6 @@ def brailleRun(lst, instr, glb , lc, ard ,proc, running):
 
 
 
-
-
-
-    
 def varExists(vars, vName):
     if len(vars) == 0:
         return False
