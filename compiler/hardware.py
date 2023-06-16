@@ -166,18 +166,20 @@ class Hardware:
     def close(self):
         self.ser.close()
 
-# Crea la instancia de Hardware
-hardware = Hardware()
-ard = ['000000000000 ', '000000010000 ', '000100010000 ', '000100010010 ']
-# Configura el encoder y comienza a escuchar
-hardware.send(directly=True,ard=ard)
+if __name__ == "__main__":
 
-print("Waiting for the message to be sent")
-# Espera hasta que termine la codificacion
-while not hardware.encoder.finished:
-    time.sleep(1)  # Espera un segundo para evitar sobrecargar la CPU
+    # Crea la instancia de Hardware
+    hardware = Hardware()
+    ard = ['000000000000 ', '000000010000 ', '000100010000 ', '000100010010 ']
+    # Configura el encoder y comienza a escuchar
+    hardware.send(directly=True,ard=ard)
 
-# Cierra la conexion
-hardware.close()
+    print("Waiting for the message to be sent")
+    # Espera hasta que termine la codificacion
+    while not hardware.encoder.finished:
+        time.sleep(1)  # Espera un segundo para evitar sobrecargar la CPU
 
-print("Finished")
+    # Cierra la conexion
+    hardware.close()
+
+    print("Finished")

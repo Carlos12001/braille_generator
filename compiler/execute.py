@@ -1,6 +1,8 @@
 from compiler import *
 import contextlib
 import io
+from hardware import Hardware
+import time
 
 
 def brailleRun(lst, instr, glb , lc, ard ,proc, running, initial, hw):
@@ -290,7 +292,6 @@ def brailleRun(lst, instr, glb , lc, ard ,proc, running, initial, hw):
 
 
         elif instr[i][0] == 'phw':
-            print(instr[i][1])
             if isinstance(instr[i][1], str):
                 hw += instr[i][1]
             else:
@@ -300,13 +301,21 @@ def brailleRun(lst, instr, glb , lc, ard ,proc, running, initial, hw):
     
 
     if running and initial == 'Y':
-        for i in range(len(ard)):
-            ard[i] += " "
-        print(ard)
-        print(hw)
+        hardware = Hardware()
+        ard = ard[1:]
         
-
-
+        if ard!=[]:
+            for i in range(len(ard)):
+                ard[i] += " "
+            hardware.send(directly=True,ard=ard)
+        else:
+            hardware.send(message=hw)
+        
+        print("Waiting for the message to be sent")
+        while not hardware.encoder.finished:
+            time.sleep(1)
+        hardware.close()
+        print("Finished")
 
 def varExists(vars, vName):
     if len(vars) == 0:
@@ -365,12 +374,11 @@ parser = brailleParser()
 data = '''//Comentario inicial
 Proc @Master
 (
-NEW @variable1, (Num, 3);
+NEW @variable1, (Num, 1);
 NEW @variable2, (Bool, False);
 Case @variable1
 When 1 Then
-( Signal(@variable1, 1);
-Signal(2, 0);)
+( Signal(@variable1, 1);)
 When 2 Then
 ( Signal(@variable1, 0);)
 Else
@@ -382,6 +390,7 @@ Repeat
 Break;
 );
 PrintHW("HolaHola");
+Signal(9, 1);
 );
 
 Proc @Pedro
@@ -455,7 +464,7 @@ print(console.getvalue())
 if check_first_comment(data):
     if searchProcedure(parsedlist, "@Master"):
         start = instruction_stack(searchProcedure(parsedlist, "@Master"))
-        brailleRun(parsedlist, start ,[], [], [], "G", True, "Y", "")
+        brailleRun(parsedlist, start ,[], [], ['000000000000'], "G", True, "Y", "")
     else:
         print("Error: procedure @Master is missing!")
 else:
