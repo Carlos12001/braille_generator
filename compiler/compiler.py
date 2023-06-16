@@ -5,9 +5,9 @@ Consolelog = []
 
 def check_first_comment(string):
     if(string.startswith("//")):
-        return ""
+        return True
     else:
-        return "Error: Initial comment is missing!"
+        return False
     
 def run(plist):
     print("fuck")
@@ -185,10 +185,8 @@ NEW @variable1, (Num, 1);
 NEW @variable2, (Bool, True);
 Case @variable1
 When 1 Then
-( 
-    Signal(@variale1, 0);
-    PrintValues ("Ayuda");
-)
+( Signal(@variale1, 0);
+Signal(2, 0);)
 When 2 Then
 ( Signal(@variale1, 0);)
 Else
@@ -206,19 +204,16 @@ Proc @Pedro
 Values (@var, True);
 While IsTrue(@variale2);
  ( Signal(@variale2, 1);
- PrintValues ("ayuda");
- Values (@variable1,
- Alter (@variable1,ADD, 1););
 // Cambia variable a False
  AlterB (@variable2);
 );
 PrintValues ("Aqui procedimiento ", @variable1, " pedro");
 Until
  (
- PrintValues ("ayuda");
 // Aumenta en 1 a la variable
  Values (@variable1,
  Alter (@variable1,ADD, 1););
+ Signal(@variale1, 0);
  )
  @variable1 > 10;
 );
@@ -226,7 +221,7 @@ Until
     parsedlist = parser.parse(lexer.tokenize(data))
     #print(parsedlist)
     #print(searchProcedure(parsedlist, "@Master"))
-    print(instruction_stack(searchProcedure(parsedlist, "@Master")))
-    #print(instruction_match(('case', '@variable1', 1, ('instructions', ('signal', '@variale1', 0)), 2, ('signal', '@variale1', 0), 'Else', ('proc_call', '@pedro'))))
+    print(instruction_stack(searchProcedure(parsedlist, "@Pedro")))
+    #print(instruction_match(('case', '@variable1', ('cases', ('when', 1, ('instructions', ('signal', '@variale1', 0))), ('cases', ('when', 2, ('instructions', ('signal', '@variale1', 0))), None, 'Else', ('instructions', ('proc_call', '@pedro')))))))    
     
     #print(check_first_comment(data))
