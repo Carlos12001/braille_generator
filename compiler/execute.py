@@ -312,10 +312,6 @@ def brailleRun(lst, instr, glb , lc, ard ,proc, running, initial, hw):
             hardware.send(message=hw)
         
         print("Waiting for the message to be sent")
-        while not hardware.encoder.finished:
-            time.sleep(1)
-        hardware.close()
-        print("Finished")
 
 def varExists(vars, vName):
     if len(vars) == 0:
@@ -459,7 +455,6 @@ def r_file(txt):
 
 r_file(data)
 print(console.getvalue())
-'''
 
 if check_first_comment(data):
     if searchProcedure(parsedlist, "@Master"):
@@ -473,3 +468,4 @@ else:
 
 #print(searchProcedure(parsedlist, "@Master"))
 
+'''
