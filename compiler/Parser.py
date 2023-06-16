@@ -3,7 +3,7 @@ from Lexer import brailleLexer
 
 class brailleParser(Parser):
 
-    debugfile = 'parser.out'
+    #debugfile = 'parser.out'
 
     tokens = brailleLexer.tokens
 
@@ -30,8 +30,7 @@ class brailleParser(Parser):
         return ('instructions', p.statements, p[1])
     
     @_('statement',
-       'operator',
-       'condition')
+       'operator')
     def statements(self, p):
         return ('instructions', p[0])
     
@@ -59,6 +58,11 @@ class brailleParser(Parser):
        'SIGNAL "(" operator "," NUM ")" ";" ')
     def statement(self, p):
         return ('signal', p[2], p[4])
+    
+    @_('VS "(" ID ")" ";"',
+       'VS "(" NUM ")" ";"')
+    def statement(self, p):
+        return ('vsignal', p[2])
 
     @_('RPT "(" statements BRK ")" ";" ')
     def statement(self, p):
@@ -115,9 +119,7 @@ class brailleParser(Parser):
     def case(self, p):
         return ('when', p[1], p.statements)
     
-    @_('ID operand expr',
-       'NUM operand expr',
-       'boolean operand expr',)
+    @_('ID operand expr')
     def condition(self, p):
         return ('num_cond', p[0], p.operand, p[2])
     
@@ -164,21 +166,9 @@ if __name__ == '__main__':
     env = {}
 
     data = '''//Comentario inicial
-Proc @Pedro
-(
-PrintValues ("ayuda", "por favor");
-);
 Proc @Master
 (
-NEW @Variable1, (Num, 1);
-Values (@variable1, 5);
-PrintValues ("Hola", @variable1, "adios compi 
-2023");
-PrintValues ("ayuda", "por favor");
-);
-Proc @Juan
-(
-PrintValues ("Adios", "Mundo");
+ViewSignal (5); 
 );
 '''
 

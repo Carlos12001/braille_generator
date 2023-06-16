@@ -6,7 +6,7 @@ class brailleLexer(Lexer):
     tokens = { ID, NUM, OP, PROC,
                TRUE, FALSE, VALUES, ALTER,
                NEW, NTYPE, BTYPE, CALL,
-               ALTERB, SIGNAL, GT, LT,
+               ALTERB, SIGNAL, VS, GT, LT,
                EQEQ, DIFF, GE, LE, IT,
                RPT, BRK, UNT, WHILE,
                CASE, WHEN, THEN, ELSE,
@@ -51,6 +51,7 @@ class brailleLexer(Lexer):
     ALTERB = r'AlterB'
     ALTER = r'Alter'
     SIGNAL = r'Signal'
+    VS = r'ViewSignal'
     IT = r'IsTrue'
     RPT = r'Repeat'
     BRK = r'Break;'
