@@ -104,28 +104,30 @@ class BrailleEncoder:
     __special_chars = ["ñ","ü","á","é","í","ó","ú","Ñ","Ü","Á","É","Í","Ó",
                         "Ú","¿","¡","\"","'"]
     
-    def __init__(self,message):
-        if len(message)==0:
-            sel.message = " "
+    
+    def __init__(self,message="",directly=False,ard=None):
+        if directly:
+            if ard is not None:
+                self.sequence = ard
+            else:
+                raise ValueError("If 'directly' is set to True, 'ard' must be provided.")
         else:
-            self.message = message 
+            self.message = message + " "
+            self.sequence = [(self.__braille_dict[char] + char) for char in self.message]
         self.pos = 0  
         self.finished = False
         
     def next(self):
-        if self.pos < len(self.message)-1:
+        if self.pos < len(self.sequence) - 1:
             self.pos += 1
         else:
-            self.message = " "
+            self.sequence = ["000000000000 "]
             self.pos = 0
             self.finished = True
     
     def get_character(self):
-        char = self.message[self.pos]
-        if char in self.__special_chars:
-            return (self.__braille_dict[char] + " ").encode("ascii")
-        else:
-            return (self.__braille_dict[char] + char).encode("ascii")
+        return (self.sequence[self.pos]).encode("ascii")
+
 
 
 class Hardware:
@@ -145,29 +147,35 @@ class Hardware:
                     print("It's reviced ", self.encoder.get_character())
                     self.encoder.next()
                     if self.encoder.finished:
-                        break
-            
+                        break 
 
-    def send(self, message):
+    def send(self,message="",directly=False,ard=None):
         if self.encoder is not None:
             raise Exception("There is already a message being encoded")
-        self.encoder = BrailleEncoder(message)
-        self.thread.start()
-
+        if directly:
+            print("directly")
+            if ard is not None:
+                self.encoder = BrailleEncoder(message,directly=True,ard=ard)
+            else:
+                raise ValueError("If 'directly' is set to True, 'ard' must be provided.")
+        else:
+            self.encoder = BrailleEncoder(message)
+ 
     def close(self):
         self.ser.close()
 
 # Crea la instancia de Hardware
-hardware1 = Hardware()
+hardware = Hardware()
 
 # Configura el encoder y comienza a escuchar
-hardware1.send("Hello word")
+hardware.send("Hello word")
 
+print("Waiting for the message to be sent")
 # Espera hasta que termine la codificacion
-while not hardware1.encoder.finished:
+while not hardware.encoder.finished:
     time.sleep(1)  # Espera un segundo para evitar sobrecargar la CPU
 
 # Cierra la conexion
-hardware1.close()
+hardware.close()
 
 print("Finished")
