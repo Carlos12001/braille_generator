@@ -84,6 +84,10 @@ class brailleParser(Parser):
     def statement(self,p):
         return ('print', p.params)
     
+    @_('PHW "(" STRING ")" ";" ')
+    def statement(self,p):
+        return ('phw', p[2])
+    
     @_('')
     def params(self, p):
         pass
@@ -168,7 +172,7 @@ if __name__ == '__main__':
     data = '''//Comentario inicial
 Proc @Master
 (
-ViewSignal (5); 
+PrintHW("Hola mundo");
 );
 '''
 

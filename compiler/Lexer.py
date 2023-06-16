@@ -10,7 +10,7 @@ class brailleLexer(Lexer):
                EQEQ, DIFF, GE, LE, IT,
                RPT, BRK, UNT, WHILE,
                CASE, WHEN, THEN, ELSE,
-               PRINT, STRING}
+               PRINT, PHW, STRING}
 
     #Ignore spaces
     ignore ='\t '
@@ -31,6 +31,7 @@ class brailleLexer(Lexer):
     LT = r'<'
     EQEQ = r'=='
     PRINT = r'PrintValues'
+    PHW = r'PrintHW'
 
     @_(r'\d+')
     def NUM(self, t):
